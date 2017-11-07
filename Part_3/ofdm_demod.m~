@@ -1,13 +1,14 @@
 function [Y] = ofdm_demod(noisy_x_serial,N,prefix,pre,L)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-%% Serial to perallel conversion and removing prefixs
+%% Serial to perallel conversion 
 if (pre == true)    
     noisy_x = reshape(noisy_x_serial,(N+L),[]);
-    noisy_x = noisy_x(L+1:end,:);
+    noisy_x = noisy_x(L)
 else 
     noisy_x = reshape(noisy_x_serial,(N),[]);
 end
+%% Removing prefixs 
 
 %% OFDM demodulation process
 for k = 1:1:size(noisy_x,2)

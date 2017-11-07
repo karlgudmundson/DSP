@@ -1,4 +1,4 @@
-function [x_serial] = ofdm_mod(mod_vec,N,prefix,pre)
+function [x_serial] = ofdm_mod(mod_vec,N,prefix,pre,L)
 % N must be even
 
 %% generation of the packet including each frame 
@@ -15,8 +15,7 @@ end
 
 %% Creating cyclic prefix 
 if(pre == true)
-    L = 10; % should be equal to impulse responbse length 
-    x_with_prefix = [x(end-L:end,:); x]
+    x_with_prefix = [x(end-L+1:end,:); x]
 else
     x_with_prefix = x;
 end
