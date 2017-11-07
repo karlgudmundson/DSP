@@ -1,21 +1,13 @@
-%x_clear all;
-Nq = 6;
-M = 2^Nq;
-L = 100000; %%% length of randome sequence
-rand_seq = randi([0, 1], L*log2(M),1);
-mapping = 'bin';
-UnitAveragePower = true;
-N=6;
-%%%%%%%%%%%% Transmitter TX %%%%%%%%%%%%%%
-mod_vec = qam_mod_2(Nq,rand_seq,mapping,UnitAveragePower);
+clear all;
+rand_seq = [1 1 0 1 0 0 0 1 0 1 1 1 0 1 0 0 0 1 0 1];
+%%% Here let's assume a 4qam modulation
+mod_vec = [1-1*1i, -1-1*1i, -1+1*1i, -1-1*1i, -1-1*1i,1-1*1i, -1-1*1i, -1+1*1i, -1-1*1i, -1-1*1i];
+N = 12;
 %% Transmitter TX
-[x_serial] = ofdm_mod(mod_vec,N);
+[x_serial] = ofdm_mod(mod_vec,N,'prefix',false);
 
 %% channel (ideal channel so far w/o noise and H(z) =1)
+noisy_x_serial = x_serial;
 
 %% Receiver RX
-x_mod = ofdm_demod(x_serial,N);
-
-demod_x = qam_demod(x_mod,Nq,mapping,UnitAveragePower);
-
-ber = ber(rand_seq,demod_x)
+[Y] = ofdm_demod(noisy_x_serial,N);

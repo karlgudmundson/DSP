@@ -1,4 +1,4 @@
-function [x_serial] = ofdm_mod(mod_vec,N)
+function [x_serial] = ofdm_mod(mod_vec,N,prefix,pre)
 % N must be even
 
 %% generation of the packet including each frame 
@@ -7,22 +7,19 @@ A_star = conj(A);
 packet = [zeros(1,size(A,2)); A ; zeros(1,size(A,2)) ; flipud(A_star)];
 
 %% computation of the time sequence
-k = 0:1:N-1;
-n = 0:1:N-1;
 size_tot = size(packet,2);
-
+x = ones(N,size_tot);
 for m=1:1:size_tot
-%     for l=1:1:N
-%         x(l,m) = exp(1i*k(l)*2*pi.*n/N)*packet(:,m);
-%     end
     x(:,m) = N.*ifft(packet(:,m),N);
 end
 
-x_test=ifft(packet);
+%% Creating cyclic prefix 
+if(pre == true)
+    L = 10; % should be equal to impulse responbse length 
+    x_with_prefix = [x(end-L:end,:); x]
+else
+    x_with_prefix = x;
+end
 
 %% parallel to serial conversion
-x_serial = reshape(x,[],1);
-
-
-
-
+x_serial = reshape(x_with_prefix,[],1);
