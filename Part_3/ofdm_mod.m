@@ -1,8 +1,15 @@
-function [x_serial] = ofdm_mod(mod_vec,N,prefix,pre,L)
-% N must be even
+function [x_serial] = ofdm_mod(mod_vec,N,prefix,pre,L,rem)
+%Fill up last packets with seros if needed
+
+if (rem ~=0)
+    mod_vec_even = mod_vec(1:end-rem);    
+    last_package = [mod_vec(end-rem+1:end); zeros((N/2-1)-rem,1)];
+    A = [reshape(mod_vec_even,(N/2 -1),[]), last_package];
+else
+    A = reshape(mod_vec,(N/2 -1),[]);
+end
 
 %% generation of the packet including each frame 
-A = reshape(mod_vec,(N/2 -1),[]);
 A_star = conj(A);
 packet = [zeros(1,size(A,2)); A ; zeros(1,size(A,2)) ; flipud(A_star)];
 
@@ -15,7 +22,7 @@ end
 
 %% Creating cyclic prefix 
 if(pre == true)
-    x_with_prefix = [x(end-L+1:end,:); x]
+    x_with_prefix = [x(end-L+1:end,:); x];
 else
     x_with_prefix = x;
 end
