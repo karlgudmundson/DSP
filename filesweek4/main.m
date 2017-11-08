@@ -4,7 +4,7 @@
 [bitStream, imageData, colorMap, imageSize, bitsPerPixel] = imagetobitstream('image.bmp');
 
 % QAM modulation
-qamStream = bitStream;
+qamStream = qam_mod_2(bitsPerPixel,bitStream,'bin',true);
 
 % OFDM modulation
 ofdmStream = qamStream;
@@ -16,10 +16,10 @@ rxOfdmStream = ofdmStream;
 rxQamStream = rxOfdmStream;
 
 % QAM demodulation
-rxBitStream = rxQamStream;
+rxBitStream = qam_demod(qamStream,bitsPerPixel,'bin',true);
 
 % Compute BER
-% berTransmission = ber(bitStream,rxBitStream);
+[berTransmission] = ber(bitStream,rxBitStream);
 
 % Construct image from bitstream
 imageRx = bitstreamtoimage(rxBitStream, imageSize, bitsPerPixel);
