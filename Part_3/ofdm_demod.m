@@ -1,4 +1,4 @@
-function [Y] = ofdm_demod(noisy_x_serial,N,prefix,pre,L,rem)
+function [Y] = ofdm_demod(noisy_x_serial,N,pre,L,rem)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 %% Serial to parallel conversion and removing prefixs
