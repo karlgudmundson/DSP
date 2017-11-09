@@ -1,14 +1,13 @@
 clear all;
 close all;
-load('IRest.mat')
-channel_IR = h;
+
 % Exercise session 4: DMT-OFDM transmission scheme
 
 % Constants
-Nq=6; %max 6
-N=10e3; %N must be even
-prefix_value = length(h)+1; %% ti has just to be longer !!! 
-SNR=50; %Signal to noise ratio
+Nq=4; %max 6
+N=50; %N must be even
+prefix_value = 12; 
+SNR=1e10; %Signal to noise ratio
 L=10; %channel order
 
 % Convert BMP image to bitstream
@@ -25,31 +24,20 @@ remainder = mod(length(qamStream),(N/2 -1));
 % remainder
 ofdmStream = ofdm_mod(qamStream,N,true,prefix_value,remainder); 
 
-% Channel with a random TF
-%num=randi([0 20],1,L);
-%den=[1 zeros(1,L-1)];
-%H=filt(num,den);
+% Channel
+num=randi([0 20],1,L);
+den=[1 zeros(1,L-1)];
+H=filt(num,den);
+
 %num = -0.5:0.05:-0.05;
 %num = -num
-%rxOfdmStream = filter(num,1,ofdmStream);
-
-% Channel with true impulse response 
-%num=randi([0 20],1,L);
-%den=[1 zeros(1,L-1)];
-%H=filt(num,den);
-rxOfdmStream = filter(h,1,ofdmStream);
+rxOfdmStream = filter(num,1,ofdmStream);
 
 % Adding white noise
-rxOfdmStream = awgn(rxOfdmStream, SNR, 'measured'); %%%% ALWAYS ADD 'measured'
+rxOfdmStream = awgn(rxOfdmStream, SNR);
 
 % OFDM demodulation + equalization
-eq = fft(h,N);
-fourier_sig = mag2db(abs(eq));
-plot(fourier_sig);
-title('DFT of IR (2nd method)');
-xlabel('frequency [Hz]');
-ylabel('Magnitude [dB]');
-grid on
+eq = fft(num,N).';
 rxQamStream = ofdm_demod(rxOfdmStream,N,true,prefix_value,remainder,eq);
 
 % QAM demodulation

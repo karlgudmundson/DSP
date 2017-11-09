@@ -1,4 +1,4 @@
-function [Y] = ofdm_demod(noisy_x_serial,N,pre,L,rem)
+function [Y] = ofdm_demod(noisy_x_serial,N,pre,L,rem,eq)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 %% Serial to parallel conversion and removing prefixs
@@ -13,7 +13,7 @@ end
 X = zeros(size(noisy_x));
 
 for k = 1:1:size(noisy_x,2)
-    X(:,k) = (1./N)*fft(noisy_x(:,k),N);
+    X(:,k) = (1./N)*fft(noisy_x(:,k),N)./eq;
 end
 
 %% in the simplest case, the only required operation is the extraction of X_k coefficients
