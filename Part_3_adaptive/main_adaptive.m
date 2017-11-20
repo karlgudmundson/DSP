@@ -2,13 +2,15 @@ clear all;
 close all;
 mkdir('/Users/matthieu/GitHub/DSP')
 addpath(genpath('/Users/matthieu/GitHub/DSP'))
-
+tic
 load('IRest.mat');
 load('pnk.mat');
+load('noise_recorded_vec.mat');
 channel_IR = h;
 %% Variable initilisation 
 % Defining first what is the length of the packet 
 N=1000; %N must be even
+pnk = pwelch(noise_recorded_vec,128,120,N-1,16e3);
 % Gamma = 10 allows to believe to a theoretical BER of 10^-6 per freq. bins
 gamma = 100;
 eq = fft(h,N);
@@ -25,7 +27,7 @@ grid on
 % Constants
 Nq=6; %max 6
 prefix_value = length(h)+1; %% ti has just to be longer !!! 
-SNR=20; %Signal to noise ratio
+SNR=15; %Signal to noise ratio
 L=10; %channel order
 
 %% Convert BMP image to bitstream
@@ -46,7 +48,10 @@ ofdmStream = ofdm_mod(qamStream,N,true,prefix_value,remainder);
 % Channel with true impulse response 
 rxOfdmStream = filter(h,1,ofdmStream);
 % Adding white noise
+rxOfdmStreamNoise = rxOfdmStream;
 rxOfdmStream = awgn(rxOfdmStream, SNR, 'measured'); %%%% ALWAYS ADD 'measured'
+noise_recorded_vec = rxOfdmStream -rxOfdmStreamNoise;
+save('noise_recorded_vec.mat');
 % OFDM demodulation + equalization
 
 rxQamStream = ofdm_demod(rxOfdmStream,N,true,prefix_value,remainder,eq);
@@ -63,4 +68,4 @@ imageRx = bitstreamtoimage(rxBitStream, imageSize, bitsPerPixel);
 figure
 subplot(2,1,1); colormap(colorMap); image(imageData); axis image; title('Original image'); drawnow;
 subplot(2,1,2); colormap(colorMap); image(imageRx); axis image; title(['Received image']); drawnow;
-
+toc

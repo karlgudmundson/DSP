@@ -49,6 +49,7 @@ ofdmStream_on_off = ofdm_mod_on_off(qamStream,N,true,prefix_value,remainder_on_o
 % Channel with true impulse response 
 rxOfdmStream = filter(h,1,ofdmStream);
 rxOfdmStream_on_off = filter(h,1,ofdmStream_on_off);
+noiseRxOfdmStream = rxOfdmStream;
 % Adding white noise
 rxOfdmStream = awgn(rxOfdmStream, SNR, 'measured'); %%%% ALWAYS ADD 'measured'
 rxOfdmStream_on_off  = awgn(rxOfdmStream_on_off , SNR, 'measured');

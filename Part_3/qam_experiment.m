@@ -2,7 +2,7 @@ clear all;
 %function [demod_vec] = qam_experiment()
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-Nq = 6;
+Nq = 3;
 M = 2^Nq;
 L = 100000; %%% length of randome sequence
 rand_seq = randi([0, 1], L*log2(M),1);
