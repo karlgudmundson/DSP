@@ -19,9 +19,9 @@ new_index_array = sort(new_index_array,'ascend');
 % Exercise session 4: DMT-OFDM transmission scheme
 
 % Constants
-Nq=1; %max 6
+Nq=6; %max 6
 prefix_value = length(h)+1; %% ti has just to be longer !!! 
-SNR=10; %Signal to noise ratio
+SNR=20; %Signal to noise ratio
 L=10; %channel order
 
 % Convert BMP image to bitstream
