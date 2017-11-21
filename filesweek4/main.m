@@ -1,5 +1,6 @@
 clear all;
 close all;
+tic
 load('IRest.mat')
 channel_IR = h;
 N=1e3; %N must be even
@@ -18,7 +19,7 @@ new_index_array = sort(new_index_array,'ascend');
 % Exercise session 4: DMT-OFDM transmission scheme
 
 % Constants
-Nq=6; %max 6
+Nq=1; %max 6
 prefix_value = length(h)+1; %% ti has just to be longer !!! 
 SNR=10; %Signal to noise ratio
 L=10; %channel order
@@ -78,3 +79,4 @@ subplot(2,1,2); colormap(colorMap); image(imageRx); axis image; title(['Received
 figure
 subplot(2,1,1); colormap(colorMap); image(imageData); axis image; title('Original image ON OFF bit loading'); drawnow;
 subplot(2,1,2); colormap(colorMap); image(imageRx_on_off); axis image; title(['Received image ON OFF bit loading']); drawnow;
+toc
