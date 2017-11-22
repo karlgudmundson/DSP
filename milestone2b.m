@@ -5,6 +5,8 @@
 
 clear all;
 close all;
+
+% Loading data from last demo session
 load('IRest.mat')
 channel_IR = h;
 

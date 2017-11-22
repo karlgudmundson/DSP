@@ -3,10 +3,10 @@ function [mod_vec_tot,m,bits_remainding,quotient,bk_generalized] = qam_mod_adapt
 %arguments such as the mapping, the QAM order, ... notice that mapping can
 %be either 'gray' or 'bin' and UniAveragPozer can be either true or false
 
-%% 0-padding the #bits such that the modulation works proprely -> not smart :(
-%%% sum(bk) represents the number of bits that you can modulate per frame 
+% sum(bk) represents the number of bits that you can modulate per frame
 remainder = rem(length(sequence),sum(bk));
 quotient = floor(length(sequence)/sum(bk)); %% number of frame required in the OFDM
+
 M = (quotient+1)*length(bk); %% length of total modulated vector 
 m = 1; %% is the index of bk where all bits are modulated
 while (sum(bk(1:m)) < remainder ) m=m+1;end
