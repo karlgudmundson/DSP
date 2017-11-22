@@ -2,9 +2,9 @@ close all;
 clear all;
 
 %loading data from last demo session
-load('IRest.mat');
-load('pnk.mat');
-load('noise_recorded_vec.mat'); 
+load('functions/IRest.mat');
+%load('functions/pnk.mat');
+load('functions/noise_recorded_vec.mat'); 
 
 % Variable initialization 
 % Defining the length of the packet first
@@ -13,8 +13,18 @@ N=1000; %DFT size, N must be even
 Nq=6; %QAM constellation size, max 6
 prefix_value = length(h)+1; %prefix value needs to be longer than IR
 SNR=20; %Signal to noise ratio
-gamma = 50; % Gamma = 10 allows to believe a theoretical BER of 10^-6 per freq. bins
+gamma = 20; % Gamma = 10 allows to believe a theoretical BER of 10^-6 per freq. bins
 eq = fft(h,N); %scaling/equalization factor
+
+%%%%%% /!\ %%%%%%%%
+%%%%% / ! \ %%%%%%%
+%%%% /  !  \ %%%%%%
+% UNCOMMENT THE 2 FOLLOWING LINES LINES IF YOU CHANGE THE SNR AND RUN THE SCRIPT TWICE -->
+% once for measuring the noise and the second times for doing the apative
+% modulationn
+
+pnk = pwelch(noise_recorded_vec,128,120,N-1,16e3);
+save('functions/pnk.mat');
 
 % Computing bk
 bk = compute_bk(eq(2:N/2),gamma,pnk(2:end));
@@ -39,7 +49,7 @@ rxOfdmStream = filter(h,1,ofdmStream);
 rxOfdmStreamNoise = rxOfdmStream;
 rxOfdmStream = awgn(rxOfdmStream, SNR, 'measured'); %%%% ALWAYS ADD 'measured'
 noise_recorded_vec = rxOfdmStream -rxOfdmStreamNoise;
-save('noise_recorded_vec.mat');
+save('functions/noise_recorded_vec.mat');
 % OFDM demodulation + equalization
 
 rxQamStream = ofdm_demod(rxOfdmStream,N,true,prefix_value,remainder,eq);
@@ -50,11 +60,9 @@ rxBitStream = qam_demod_adaptive(rxQamStream,bk_generalized,'bin',true,bits_rema
 [berTransmission] = ber(bitStream,rxBitStream);
 
 % Construct image from bitstream
-%imageRx = bitstreamtoimage(rxBitStream, imageSize, bitsPerPixel);
+imageRx = bitstreamtoimage(rxBitStream, imageSize, bitsPerPixel);
 
 % Plot images
 %figure
-%subplot(2,1,1); colormap(colorMap); image(imageData); axis image; title('Original image'); drawnow;
-%subplot(2,1,2); colormap(colorMap); image(imageRx); axis image; title(['Received image']); drawnow;
-toc
-profile viewer
+subplot(2,1,1); colormap(colorMap); image(imageData); axis image; title('Original image'); drawnow;
+subplot(2,1,2); colormap(colorMap); image(imageRx); axis image; title(['Received image']); drawnow;
