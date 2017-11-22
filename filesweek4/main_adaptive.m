@@ -1,9 +1,5 @@
 close all;
 clear all;
-mkdir('/Users/matthieu/GitHub/DSP')
-addpath(genpath('/Users/matthieu/GitHub/DSP'))
-tic
-profile on 
 load('IRest.mat');
 load('pnk.mat')
 load('noise_recorded_vec.mat');
