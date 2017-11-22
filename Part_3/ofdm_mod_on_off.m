@@ -1,6 +1,9 @@
 function [x_serial] = ofdm_mod_on_off(mod_vec,N,pre,L,rem,new_index_array)
+
 N_kept = length(new_index_array);
-%% Fill up last packets with seros if needed
+
+%% If remainder isn't equal to 0, the last package will not be full.
+% This fills up the last packet with zeros if needed.
 
 if (rem ~=0)
     mod_vec_even = mod_vec(1:end-rem);    
@@ -9,7 +12,10 @@ if (rem ~=0)
 else
     A = reshape(mod_vec,(N_kept),[]);
 end
-%% generation of new packet 
+
+%% generation of new packet. 
+% Sets 0 for every freq bin that isn't in new_index_array
+
 A_on_off = zeros((N/2 -1),size(A,2));
 for l = 1:1:size(A,2)
    A_on_off(new_index_array,l)  = A(:,l);

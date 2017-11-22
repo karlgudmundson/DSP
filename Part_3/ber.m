@@ -1,6 +1,6 @@
 function [ber] = ber(input_seq,output_seq)
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
+%Computes Bit Error Rate (BER), diffrence between transmitted and
+%received bitstream
 num_errors = 0;
 diff = output_seq-input_seq;
 for k=1:1:length(diff)

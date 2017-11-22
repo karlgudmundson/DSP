@@ -1,5 +1,6 @@
 function [x_serial] = ofdm_mod(mod_vec,N,pre,L,rem)
-%% Fill up last packets with seros if needed
+%% If remainder isn't equal to 0, the last package will not be full.
+% This fills up the last packet with zeros if needed.
 
 if (rem ~=0)
     mod_vec_even = mod_vec(1:end-rem);    
