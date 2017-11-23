@@ -1,5 +1,4 @@
 clear all;
-close all;
 load('IRest.mat')
 %h=h_IR2;
 
@@ -46,8 +45,8 @@ xlabel('samples [n]');
 ylabel('amplitude');
 grid on
 subplot(2,1,2)
-k = 0:1:N-1;
-f_axis = fs*k/N -fs/2;
+k = 0:1:length(h)-1;
+f_axis = fs*k/length(h) -fs/2;
 fourier_sig = mag2db(abs(fourier_sig));
 plot(f_axis,fourier_sig);
 title('DFT of IR2 (2nd method)');
@@ -59,14 +58,16 @@ fourier_sig = IR_freq_est;
 figure
 subplot(2,1,1)
 plot(time_IR_est(1:400))
-title(' Estimated IR based on the ODFDM estimation with training sequence in time domain')
+title('IR2 in time domain (2nd method)')
 xlabel('samples [n]');
 ylabel('amplitude');
 grid on
 subplot(2,1,2)
+k = 0:1:length(h)-1;
+f_axis = fs*k/length(h) -fs/2;
 fourier_sig = mag2db(abs(fourier_sig));
-plot(f_axis, fftshift(fourier_sig));
-title('Frequency response of estimated IR based on the ODFDM with training sequence');
+plot(fourier_sig);
+title('DFT of IR2 (2nd method)');
 xlabel('frequency [Hz]');
 ylabel('Magnitude [dB]');
 grid on
