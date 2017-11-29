@@ -4,7 +4,8 @@ load('IRest.mat')
 %h=h_IR2;
 
 %Constants
-N = 1e3; %DFT size
+fs = 16000; %sample freq
+N = 500; %DFT size
 Nq = 6; %QAM modulation size
 trainingFramesNum = 100; %% number of training frames 
 prefix_value = length(h)+1; %should be longer than the impulse response
@@ -19,8 +20,20 @@ trainblock=repmat(trainblock,trainingFramesNum,1); %repeating the vector trainin
 remainder = mod(length(trainblock),(N/2 -1)); % a pripori not required 
 Tx=ofdm_mod(trainblock,N,true,prefix_value,remainder); %ofdm modulation
 
+%%% Real channel %%%
+
+t=1/fs:1/fs:140/fs;
+pulse=10*sin(2*pi*800*t); %short sine function is a good pulse
+
+%%%RECORDING AND PLAYING%%%
+[simin,nbsecs,~]=initparams_5(Tx,fs,pulse); %Calls for function initparams.m
+sim('recplay');
+out=simout.signals.values;
+
+Rx = alignIO(out, pulse);
+
 %%% Channel %%%%%%
-Rx = filter(h,1,Tx);
+%Rx = filter(h,1,Tx);
 
 %%%% OFDM Demodulation %%%%%%
 trainblock = reshape(trainblock,N/2-1,[]);
@@ -36,7 +49,6 @@ rxBitStream = qam_demod(Rx_demod,Nq,'bin',true);
 
 
 %%%% plotting the channel impusle response measured 
-fs = 16e3
 fourier_sig = fftshift(fft(h,N)) %%% define the DFT size 
 figure
 subplot(2,1,1)
