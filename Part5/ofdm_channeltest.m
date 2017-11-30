@@ -22,7 +22,7 @@ Tx=ofdm_mod(trainblock,N,true,prefix_value,remainder); %ofdm modulation
 
 %%% Real channel %%%
 
-t=1/fs:1/fs:140/fs;
+t=0:1/fs:100/fs;
 pulse=10*sin(2*pi*800*t); %short sine function is a good pulse
 
 %%%RECORDING AND PLAYING%%%
