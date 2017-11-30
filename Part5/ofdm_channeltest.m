@@ -4,9 +4,9 @@ load('IRest.mat')
 %h=h_IR2;
 
 %Constants
-fs = 16000; %sample freq
+fs = 44100; %sample freq
 N = 500; %DFT size
-Nq = 6; %QAM modulation size
+Nq = 4; %QAM modulation size
 trainingFramesNum = 100; %% number of training frames 
 prefix_value = length(h)+1; %should be longer than the impulse response
 trainblock=randi([0 1], (N/2-1)*Nq, 1);
@@ -30,8 +30,8 @@ pulse=10*sin(2*pi*800*t); %short sine function is a good pulse
 sim('recplay');
 out=simout.signals.values;
 
-Rx = alignIO(out, pulse);
-
+Rx = alignIO(out, pulse,fs);
+Rx = Rx(1:length(Tx),1);
 %%% Channel %%%%%%
 %Rx = filter(h,1,Tx);
 
