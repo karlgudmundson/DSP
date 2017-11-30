@@ -1,7 +1,6 @@
 clear all;
 close all;
 load('IRest.mat')
-%h=h_IR2;
 
 %Constants
 fs = 16000; %sample freq
