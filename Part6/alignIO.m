@@ -9,10 +9,12 @@ t_acor = 0:length(acor)-1;
 plot(t_acor,acor);
 lagDiff = lag(I); %shift in samples
 
-out_aligned = out(lagDiff+1+400+length(pulse)-20:end-fs); %400 added zeros in initparams
+out_aligned = out(lagDiff+1+400+length(pulse)-70:end); %400 added zeros in initparams
                                                          %20 samples buffert
-                                                         %Not 100% sure about this though
-                                                         % 16000 is the
+figure
+plot(out_aligned)   %Not 100% sure about this though
+hold on
+plot(out)% 16000 is the
                                                          % remaining last
                                                          % second 
 

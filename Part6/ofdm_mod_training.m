@@ -1,4 +1,4 @@
-function [x_serial] = ofdm_mod_training(mod_vec,N,pre,L,rem,trainblock,Lt,Ld)
+function [x_serial,trainpacket,div_Ld,Mod_Ld] = ofdm_mod_training(mod_vec,N,pre,L,rem,trainblock,Lt,Ld)
 %% If remainder isn't equal to 0, the last package will not be full.
 % This fills up the last packet with zeros if needed.
 if (rem ~=0)
@@ -22,15 +22,15 @@ A_star = conj(A);
 packet = [zeros(1,size(A,2)); A ; zeros(1,size(A,2)) ; flipud(A_star)];
 
 %% Generation of the total packet including training frames and data frames
-div_Ld = floor(size(packet,2)./Ld);
+div_Ld = ceil(size(packet,2)./Ld);
+Mod_Ld = mod(size(packet,2),Ld);
 Total_packet = [];
-for b=1:1:div_Ld+1
-    if (b < div_Ld+1)
+for b=1:1:div_Ld
+    if (b < div_Ld)
         Total_packet = [Total_packet,trainpacket,packet(:,Ld*(b-1)+1:Ld*(b-1)+Ld)];
-        trainOrData =0;
     else
         Total_packet = [Total_packet,trainpacket,packet(:,Ld*(b-1)+1:end)];
-        trainOrData =0;
+
     end
 end
 

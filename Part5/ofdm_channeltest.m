@@ -6,7 +6,7 @@ load('IRest.mat')
 %Constants
 fs = 44100; %sample freq
 N = 500; %DFT size
-Nq = 4; %QAM modulation size
+Nq = 6; %QAM modulation size
 trainingFramesNum = 100; %% number of training frames 
 prefix_value = length(h)+1; %should be longer than the impulse response
 trainblock=randi([0 1], (N/2-1)*Nq, 1);

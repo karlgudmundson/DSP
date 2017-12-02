@@ -15,30 +15,29 @@ if(size(trainpacket,2) == Lt)
 else
     error('Trainign packet is wrong');
 end
-Training_star = conj(A);
-packet = [zeros(1,size(A,2)); A ; zeros(1,size(A,2)) ; flipud(A_star)];
+Training_star = conj(trainpacket);
+trainpacket = [zeros(1,size(trainpacket,2)); trainpacket ; zeros(1,size(trainpacket,2)) ; flipud(Training_star)];
 %% generation of the packet including each frame 
 A_star = conj(A);
 packet = [zeros(1,size(A,2)); A ; zeros(1,size(A,2)) ; flipud(A_star)];
 
 %% Generation of the total packet including training frames and data frames
-mod_Ld = mod(size(packet,2),Ld);
 div_Ld = floor(size(packet,2)./Ld);
 Total_packet = [];
-trainOrData = 0; %% train or data --> it means that when the variable is 0, it's a traing frame. otherwise it's a data frame
 for b=1:1:div_Ld+1
-    if (trainOrData ==0)
-    Total_packet = [Total_packet trainpacket];
-    trainOrData =1;
+    if (b < div_Ld+1)
+        Total_packet = [Total_packet,trainpacket,packet(:,Ld*(b-1)+1:Ld*(b-1)+Ld)];
     else
+        Total_packet = [Total_packet,trainpacket,packet(:,Ld*(b-1)+1:end)];
+
     end
 end
 
 %% computation of the time sequence including training frames and data frames
-size_tot = size(packet,2);
+size_tot = size(Total_packet,2);
 x = ones(N,size_tot);
 for m=1:1:size_tot
-    x(:,m) = N.*ifft(packet(:,m),N);
+    x(:,m) = N.*ifft(Total_packet(:,m),N);
 end
 
 %% Creating cyclic prefix 

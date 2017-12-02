@@ -38,7 +38,7 @@ end
 
 X_data = X(:,vec_data);
 X_training = X(:,vec_training);
-trainblock = repmat(trainblock,1,div_Ld);
+trainblock = repmat(trainblock,!div_Ld,1)
 %% Channel estimation 
 
 H_k = zeros(size(X_training,1),div_Ld);
