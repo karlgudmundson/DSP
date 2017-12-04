@@ -7,8 +7,8 @@ channel_IR = h;
 N=500; %Frame length/ DFT size. N must be even
 N_kept = 20; %For ON-OFF bit loading 
 eq = fft(h,N);
-fs = 44100; %sample freq
-Nq = 6; %QAM modulation size
+fs = 8e3; %sample freq
+Nq = 3; %QAM modulation size
 SNR=20; %Signal to noise ratio
 L=10; %channel order
 prefix_value = length(h)+1; %should be longer than the impulse response
@@ -35,14 +35,14 @@ trainblock=repmat(trainblock,trainingFramesNum,1);
 %%% Real channel %%%
 
 t=0:1/fs:1000/fs;
-pulse=sin(2*pi*800*t); %short sine function is a good pulse
+pulse=(0.8).*sin(2*pi*800*t); %short sine function is a good pulse
 
 %%%RECORDING AND PLAYING%%%
 [simin,nbsecs,~]=initparams_5(ofdmStream,fs,pulse); %Calls for function initparams.m
-sim('recplay');
+sim('recplay2');
 out=simout.signals.values;
-
-Rx = alignIO(out, pulse,fs);
+%%
+Rx = alignIO(out(:,1), pulse,fs);
 Rx = Rx(1:length(ofdmStream),1);
 % % Channel with true impulse response
 % rxOfdmStream = filter(h,1,ofdmStream);
