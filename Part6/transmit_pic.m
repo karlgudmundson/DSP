@@ -4,15 +4,14 @@ tic
 load('IRest.mat')
 channel_IR = h;
 %% Definition of variables 
-N=500; %Frame length/ DFT size. N must be even
-N_kept = 20; %For ON-OFF bit loading 
-eq = fft(h,N);
-fs = 8e3; %sample freq
+N=1000; %Frame length/ DFT size. N must be even
+N_kept = N/2 -1; %For ON-OFF bit loading 
+fs = 16e3; %sample freq
 Nq = 3; %QAM modulation size
 SNR=20; %Signal to noise ratio
 L=10; %channel order
 prefix_value = length(h)+1; %should be longer than the impulse response
-Lt = 20; % number of training frames 
+Lt = 10; % number of training frames 
 Ld = 20; % number of data frames
 %% qamstream generation
 
@@ -44,25 +43,11 @@ out=simout.signals.values;
 %%
 Rx = alignIO(out(:,1), pulse,fs);
 Rx = Rx(1:length(ofdmStream),1);
-% % Channel with true impulse response
-% rxOfdmStream = filter(h,1,ofdmStream);
-% % Adding white noise
-% Rx = awgn(rxOfdmStream, SNR, 'measured'); %%%% ALWAYS ADD 'measured'
 %% OFDM demodulation + equalization
-[rxQamStream,H_k] = ofdm_demod_training(Rx,N,true,prefix_value,remainder,trainpacket,Lt,Ld,div_Ld,Mod_Ld);
-
-% QAM demodulation
-rxBitStream = qam_demod(rxQamStream,Nq,'bin',true);
-
+[rxQamStream,H_k] = ofdm_demod_training(Rx,N,true,prefix_value,remainder,trainpacket,Lt,Ld,div_Ld,Mod_Ld); % OFDM deomudaltion 
+rxBitStream = qam_demod(rxQamStream,Nq,'bin',true); % QAM demodulation
+%% Data visualisation 
+visualize_demod(H_k,N,fs,imageData,colorMap,Ld,Lt,prefix_value,rxBitStream,Nq,N_kept);
 %% Compute BER
 [berTransmission] = ber(bitStream,rxBitStream);
-
-% Construct image from bitstream
-imageRx = bitstreamtoimage(rxBitStream, imageSize, bitsPerPixel);
-
-% Plot images
-figure
-subplot(2,1,1); colormap(colorMap); image(imageData); axis image; title('Original image'); drawnow;
-subplot(2,1,2); colormap(colorMap); image(imageRx); axis image; title(['Received image']); drawnow;
-
 toc
