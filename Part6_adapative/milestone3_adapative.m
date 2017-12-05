@@ -2,14 +2,14 @@ clear all;
 tic
 %% Definition of variables 
 N=2000; %Frame length/ DFT size. N must be even
-fs = 44.e3; %sample freq
+fs = 25e3; %sample freq
 Nq = 4; %QAM modulation size
 SNR=20; %Signal to noise ratio
 L=10; %channel order
 prefix_value = 400+1;
 trainingFramesNum = 40;%should be longer than the impulse response
-Lt = 10; % number of training frames 
-Ld = 50; % number of data frames
+Lt = 15; % number of training frames 
+Ld = 30; % number of data frames
 gamma = 1.1;
 N_kept = N/2 -1;
 % Convert BMP image to bitstream
