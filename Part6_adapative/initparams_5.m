@@ -1,4 +1,4 @@
-function [ simin,nbsecs,fs ] = initparams_5( toplay,fs_in,pulse )
+function [ simin,nbsecs,fs,toplay ] = initparams_5( toplay,fs_in,pulse )
 %INITPARAMS
 two_sec_silence=zeros(2*fs_in,1); %zero-vector with two seconds length
 one_sec_silence=zeros(fs_in,1); %zero-vector with one second length

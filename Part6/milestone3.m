@@ -2,18 +2,18 @@ clear all;
 close all;
 warning off;
 
-disp('First Experience with BW = 100%. Press a Key to continue')
+disp('First Experiment with BW = 100%. Press a Key to continue')
 pause;
 %% Definition of variables 
-N=2000; %Frame length/ DFT size. N must be even
-fs = 30e3; %sample freq
-Nq = 4; %QAM modulation size
+N=1000; %Frame length/ DFT size. N must be even
+fs = 40e3; %sample freq
+Nq = 2; %QAM modulation size
 SNR=20; %Signal to noise ratio
 L=10; %channel order
-prefix_value = 400+1;
-trainingFramesNum = 40;%should be longer than the impulse response
+prefix_value = 100+1;
+trainingFramesNum = 20;%should be longer than the impulse response
 Lt = 10; % number of training frames 
-Ld = 30; % number of data frames
+Ld = 50; % number of data frames
 BWusage = 100;
 N_kept = floor((BWusage./100)*(N./2 -1));%For ON-OFF bit loading 
 %% qamstream generation
@@ -89,21 +89,21 @@ visualize_demod_on_off(H_k,N,fs,imageData,colorMap,Ld,Lt,prefix_value,rxBitStrea
 [berTransmission] = ber(bitStream,rxBitStream)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-disp('Second Experience with BW = 50%. Press a Key to continue')
+disp('Second Experiment with BW = 50%. Press a Key to continue')
 pause;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear all;
 close all;
 %% Definition of variables 
 N=2000; %Frame length/ DFT size. N must be even
-fs = 30e3; %sample freq
-Nq = 4; %QAM modulation size
+fs = 40e3; %sample freq
+Nq = 2; %QAM modulation size
 SNR=20; %Signal to noise ratio
 L=10; %channel order
-prefix_value = 400+1;
-trainingFramesNum = 40;%should be longer than the impulse response
+prefix_value = 100+1;
+trainingFramesNum = 20;%should be longer than the impulse response
 Lt = 10; % number of training frames 
-Ld = 30; % number of data frames
+Ld = 50; % number of data frames
 BWusage = 50;
 N_kept = floor((BWusage./100)*(N./2 -1));%For ON-OFF bit loading 
 %% qamstream generation
