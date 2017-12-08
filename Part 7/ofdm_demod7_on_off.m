@@ -1,6 +1,7 @@
-function [Y,H_k] = ofdm_demod7(noisy_x_serial,N,pre,L,rem,trainpacket,Lt,lenDataPackage,Nq)
+function [Y,H_k_tot] = ofdm_demod7_on_off(noisy_x_serial,N,pre,L,rem,trainpacket,Lt,new_index_array,lenDataPackage,Nq,X_tild)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
+N_kept = length(new_index_array);
 %% Serial to parallel conversion and removing prefixs
 if (pre == true)    
     noisy_x = reshape(noisy_x_serial,(N+L),[]);
@@ -25,6 +26,8 @@ for k = 1:1:size(X_training,1)
         X_sent_k = X_sent_k.'; %%%%%%M PAY ATTENTION TO THE DOT !!!!!!!
         H_k(k) = X_sent_k\Y_received_k; %% least square estimation
 end
+
+
 %% Demodulation of Data packages 
 X = zeros(size(noisy_x));
 for k = Lt+1:1:size(noisy_x,2)
@@ -32,33 +35,41 @@ for k = Lt+1:1:size(noisy_x,2)
 end
 Yk = X(:,Lt+1:end);
 %% NLMS
-Wk = zeros(size(noisy_x));
+Wk = zeros(lenDataPackage);
 %X_k_tild = zeros(size(noisy_x));
 Wk(:,1) = (1./H_k').'; %complex conjugate, should be without dot ;)
 Wk(1,1) = 0 + j*0;
-Wk(N/2 +1,1) = 1e-2 + j*1e-2;
-mu = 0.2; %should be between 0 and 2 (for NLMS)
+Wk(N/2 +1,1) = 0 + j*0;
+mu = 0.3; %should be between 0 and 2 (for NLMS)
 %lower my is more stable but converges slower
 %my too high can give unstable Wk
-alpha = 0.1; %avoid to divid by 0--> choosing 0.1 is ok but the smartest way of doing this is measuring the mean value of U*U' and taking a value that make sense
+alpha = 0.05; %avoid to divid by 0--> choosing 0.1 is ok but the smartest way of doing this is measuring the mean value of U*U' and taking a value that make sense
 
 %%% Computation of Xk(L+1) = Yk(L+1)*Wk(L)'
 %qammod(sequence, M,mapping, 'InputType', 'bit', 'UnitAveragePower', UnitAveragePower, 'PlotConstellation', true);
 for m=1:1:size(Yk,2)-1
     W_tild = Wk(:,m)';
     X_k_tild = (W_tild.').*Yk(:,m+1);
-    X_k_hat = qammod(qamdemod(X_k_tild,2^Nq,'bin','OutputType', 'bit','UnitAveragePower', true),2^Nq,'bin','InputType', 'bit','UnitAveragePower', true);
-    Wk(:,m+1) = Wk(:,m) + mu*Yk(:,m+1).*conj(X_k_hat-X_k_tild)./(alpha + Yk(:,m+1)'*Yk(:,m+1)); %% What about alpha ?
+    %X_k_hat = qammod(qamdemod(X_k_tild,2^Nq,'bin','OutputType', 'bit','UnitAveragePower', true),2^Nq,'bin','InputType', 'bit','UnitAveragePower', true);
+    X_k_hat = X_tild(:,m+1);
+    a_priori_error =  N*mu*Yk(:,m+1).*conj(X_k_hat-X_k_tild)./(alpha + Yk(:,m+1)'*Yk(:,m+1));
+    Wk(:,m+1) = Wk(:,m) +   a_priori_error; %% What about alpha ?
 end
-X_out = Wk'.*Yk;
+X_out = ((Wk').').*Yk;
+H_k_tot = (1./Wk').';
+H_k_tot(1,:) = 0 + j*0;
+H_k_tot(501,:) = 0 + j*0;
+
 %% in the simplest case, the only required operation is the extraction of X_k coefficients
 % Be careful there's some redundancy wihtin the X matrix (see slides lecture 3) 
 Y = X_out(2:(N/2),:);
+Y = Y(new_index_array,:);
 Y = reshape(Y,[],1);
 
 %% Remove zeros from last package if needed
 if (rem ~= 0)
-    Y=Y(1:end-((N/2-1)-rem));
+    Y=Y(1:end-((N_kept)-rem));
+end
 end
 
 

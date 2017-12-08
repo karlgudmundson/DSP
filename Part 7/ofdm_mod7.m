@@ -22,24 +22,13 @@ A_star = conj(A);
 packet = [zeros(1,size(A,2)); A ; zeros(1,size(A,2)) ; flipud(A_star)];
 
 %% Generation of the total packet including training frames and data frames
-% div_Ld = ceil(size(packet,2)./Ld);
-% Mod_Ld = mod(size(packet,2),Ld);
-% Total_packet = [];
-% for b=1:1:div_Ld
-%     if (b < div_Ld)
-%         Total_packet = [Total_packet,trainpacket,packet(:,Ld*(b-1)+1:Ld*(b-1)+Ld)];
-%     else
-%         Total_packet = [Total_packet,trainpacket,packet(:,Ld*(b-1)+1:end)];
-% 
-%     end
-% end
 Total_packet = [trainpacket,packet];
 lenDataPackage = size(packet);
 %% computation of the time sequence including training frames and data frames
 size_tot = size(Total_packet,2);
 x = ones(N,size_tot);
 for m=1:1:size_tot
-    x(:,m) = N.*ifft(Total_packet(:,m),N);
+    x(:,m) = 1.*ifft(Total_packet(:,m),N);
 end
 
 %% Creating cyclic prefix 

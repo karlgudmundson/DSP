@@ -38,7 +38,7 @@ Rx = Rx(1:length(ofdmStream),1);
 %% QAM Demodulation
 rxBitStream = qam_demod(Y,Nq,'bin',true);
 %% Data visualisation 
-%visualize_demod_on_off(H_k,N,fs,imageData,colorMap,Ld,Lt,prefix_value,rxBitStream,Nq,N_kept,new_index_array);
+visualize_demod7(H_k,N,fs,imageData,colorMap,prefix_value,rxBitStream,Nq);
 %% Compute BER
 [berTransmission] = ber(bitStream,rxBitStream)
 
