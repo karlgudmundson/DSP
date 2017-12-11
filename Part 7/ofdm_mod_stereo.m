@@ -1,4 +1,4 @@
-function [x_serial,trainpacket,lenDataPackage] = ofdm_mod_stereo(mod_vec,N,pre,L,rem,trainblock,Lt,H_1,H_2)
+function [x_serial,trainpacket,lenDataPackage] = ofdm_mod_stereo(mod_vec,N,pre,L,rem,trainblock,Lt,H_1,H_2,monotx,speaker)
 %% If remainder isn't equal to 0, the last package will not be full.
 % This fills up the last packet with zeros if needed.
 if (rem ~=0)
@@ -21,10 +21,19 @@ trainpacket = [zeros(1,size(trainpacket,2)); trainpacket ; zeros(1,size(trainpac
 A_star = conj(A);
 packet = [zeros(1,size(A,2)); A ; zeros(1,size(A,2)) ; flipud(A_star)];
 
-%% Filtering data packet 
-denum_H = sqrt(H_1.*((H_1').') + H_2.*((H_2').') );
-filter_a = ((H_1').')./denum_H;
-filter_b = ((H_2').')./denum_H;
+%% Filtering data packet
+if ~monotx
+    denum_H = sqrt(H_1.*((H_1').') + H_2.*((H_2').') );
+    filter_a = ((H_1').')./denum_H;
+    filter_b = ((H_2').')./denum_H;
+elseif speaker == 'a'
+    filter_a = 1;
+    filter_b = 0;
+elseif speaker == 'b'
+    filter_a = 0;
+    filter_b = 1;
+end
+
 packet_a = zeros(size(packet));
 packet_b = zeros(size(packet));
 for l =1:1:size(packet,2)
@@ -32,8 +41,8 @@ for l =1:1:size(packet,2)
     packet_b(:,l) = (filter_b).*packet(:,l);
 end
 %% Generation of the total packet including training frames and data frames
-Total_packet_a = [trainpacket,packet_a];
-Total_packet_b = [trainpacket,packet_b];
+Total_packet_a = packet_a; %testing to remove trainpacket, should be [trainpacket,packet_a]
+Total_packet_b = packet_b;
 lenDataPackage = size(packet);
 %% computation of the time sequence including training frames and data frames
 size_tot = size(Total_packet_a,2);
