@@ -1,0 +1,22 @@
+clear all; close all;
+% First exercicse for PART II
+%% random transfer functions 
+L = 80;
+H_1 = rand(L,1);
+H_2 = rand(L,2);
+%% Definition of variables 
+N=1000; %Frame length/ DFT size. N must be even
+fs = 20e3; %sample freq
+Nq = 2; %QAM modulation size
+prefix_value = 100+1;
+Lt = 10;% number of training
+trainingFramesNum = Lt;%should be longer than the impulse response  frames 
+%% qamstream generation
+% Convert BMP image to bitstream
+[bitStream, imageData, colorMap, imageSize, bitsPerPixel] = imagetobitstream('image.bmp');
+% QAM modulation
+qamStream = qam_mod_2(Nq,bitStream,'bin',true);
+% Check remainder 
+remainder = mod(length(qamStream),(N/2 -1));
+%% Channel est
+%% OFDM stereo modulation 
