@@ -24,6 +24,8 @@ packet = [zeros(1,size(A,2)); A ; zeros(1,size(A,2)) ; flipud(A_star)];
 %% Filtering data packet
 if ~monotx
     denum_H = sqrt(H_1.*((H_1').') + H_2.*((H_2').') );
+    denum_H(1) = 1;
+    denum_H(501) = 1;
     filter_a = ((H_1').')./denum_H;
     filter_b = ((H_2').')./denum_H;
 elseif speaker == 'a'
@@ -49,8 +51,8 @@ size_tot = size(Total_packet_a,2);
 x_a = ones(N,size_tot);
 x_b = ones(N,size_tot);
 for m=1:1:size_tot
-    x_a(:,m) = 1.*ifft(Total_packet_a(:,m),N);
-    x_b(:,m) = 1.*ifft(Total_packet_b(:,m),N);
+    x_a(:,m) = N.*ifft(Total_packet_a(:,m),N);
+    x_b(:,m) = N.*ifft(Total_packet_b(:,m),N);
 end
 
 %% Creating cyclic prefix 

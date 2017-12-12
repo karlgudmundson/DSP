@@ -50,8 +50,8 @@ alpha = 0.05; %avoid to divid by 0--> choosing 0.1 is ok but the smartest way of
 for m=1:1:size(Yk,2)-1
     W_tild = Wk(:,m)';
     X_k_tild = (W_tild.').*Yk(:,m+1);
-    %X_k_hat = qammod(qamdemod(X_k_tild,2^Nq,'bin','OutputType', 'bit','UnitAveragePower', true),2^Nq,'bin','InputType', 'bit','UnitAveragePower', true);
-    X_k_hat = X_tild(:,m+1);
+    X_k_hat = qammod(qamdemod(X_k_tild,2^Nq,'bin','OutputType', 'bit','UnitAveragePower', true),2^Nq,'bin','InputType', 'bit','UnitAveragePower', true);
+    %X_k_hat = X_tild(:,m+1);
     a_priori_error =  N*mu*Yk(:,m+1).*conj(X_k_hat-X_k_tild)./(alpha + Yk(:,m+1)'*Yk(:,m+1));
     Wk(:,m+1) = Wk(:,m) +   a_priori_error; %% What about alpha ?
 end

@@ -15,15 +15,15 @@ X = zeros(size(noisy_x));
 
 if ~monotx
     for k = 1:1:size(noisy_x,2)
-        X(:,k) = 1.*fft(noisy_x(:,k),N)./sqrt(H1(k).*H1(k)'+H2(k).*H2(k)');
+        X(:,k) = (1/N).*fft(noisy_x(:,k),N)./sqrt(H1.*(H1').'+H2.*(H2').');
     end
 elseif speaker == 'a'
     for k = 1:1:size(noisy_x,2)
-        X(:,k) = 1.*fft(noisy_x(:,k),N)./H1;
+        X(:,k) = (1/N).*fft(noisy_x(:,k),N)./H1;
     end
 elseif speaker == 'b'
     for k = 1:1:size(noisy_x,2)
-        X(:,k) = 1.*fft(noisy_x(:,k),N)./H2;
+        X(:,k) = (1/N).*fft(noisy_x(:,k),N)./H2;
     end
 end
 %% parallel to serial conversion

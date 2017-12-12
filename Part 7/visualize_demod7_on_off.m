@@ -2,7 +2,7 @@ function [] = visualize_demod7_on_off(H_k,N,fs,imageData,colorMap,prefix_value,r
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 figure
-display_factor = 4;
+display_factor = 1;
 time = 1*(N + prefix_value)./fs;
 partial_pic = [];
 partial_pic_matrix = ones(size(H_k,2),length(rxBitStream));

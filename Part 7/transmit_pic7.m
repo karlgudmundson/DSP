@@ -4,7 +4,7 @@ warning off;
 
 %% Definition of variables 
 N=1000; %Frame length/ DFT size. N must be even
-fs = 20e3; %sample freq
+fs = 30e3; %sample freq
 Nq = 2; %QAM modulation size
 prefix_value = 100+1;
 Lt = 10;% number of training
@@ -28,7 +28,7 @@ trainblock=qam_mod_2(Nq,trainblock,'bin',true); %qam modulation
 t=0:1/fs:1000/fs;
 pulse=(1).*sin(2*pi*800*t); %short sine function is a good pulse
 [simin,nbsecs,~,toplay]=initparams_7(ofdmStream,fs,pulse); %Calls for function initparams.m
-sim('recplay2');
+sim('recplay');
 out=simout.signals.values;
 %% Signal Alignment 
 Rx = alignIO7(out(:,1), pulse,fs);

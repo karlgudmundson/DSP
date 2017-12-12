@@ -7,15 +7,15 @@ H_2 = rand(L,1);
 %% Definition of variables 
 N=1000; %Frame length/ DFT size. N must be even
 fs = 20e3; %sample freq
-Nq = 2; %QAM modulation size
+Nq = 6; %QAM modulation size
 prefix_value = 100+1;
 Lt = 10;% number of training
 trainingFramesNum = Lt;%should be longer than the impulse response  frames 
 H_1_omega = fft(H_1,N);
 H_2_omega = fft(H_2,N);
-monotx=true; %monotransmission. true or false
-speaker='b'; %speaker to use for monotransmission. 'a' or 'b'
-SNR=20;
+monotx=false; %monotransmission. true or false
+speaker='a'; %speaker to use for monotransmission. 'a' or 'b'
+SNR=10;
 %% qamstream generation
 % Convert BMP image to bitstream
 [bitStream, imageData, colorMap, imageSize, bitsPerPixel] = imagetobitstream('image.bmp');
