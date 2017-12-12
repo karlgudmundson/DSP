@@ -1,4 +1,4 @@
-function [Y] = ofdm_demod_stereo(noisy_x_serial,N,pre,L,rem,H1,H2,monotx,speaker)
+function [Y] = ofdm_demod_stereo(noisy_x_serial,N,pre,L,rem,H1,H2,monotx,speaker,Lt)
 
 %% Serial to parallel conversion and removing prefixs
 if (pre == true)    

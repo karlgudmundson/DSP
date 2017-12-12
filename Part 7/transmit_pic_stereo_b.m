@@ -3,15 +3,19 @@ clear all; close all;
 %% random transfer functions 
 stereo_channel_est;
 %% Definition of variables 
-N=1000; %Frame length/ DFT size. N must be even
-fs = 20e3; %sample freq
-Nq = 2; %QAM modulation size
-prefix_value = 100+1;
-Lt = 10;% number of training
+N=4000; %Frame length/ DFT size. N must be even
+fs = 40e3; %sample freq
+Nq = 3; %QAM modulation size
+prefix_value = 400+1;
+Lt = 50;% number of training
 trainingFramesNum = Lt;%should be longer than the impulse response  frames 
 H_1_omega = H_tot(:,1);
 H_2_omega = H_tot(:,2);
-monotx=false; %monotransmission. true or false
+H_1_omega(1) = 1e-6 + j*1e-6;;
+H_1_omega(N/2 +1) = 1e-6 + j*1e-6;;
+H_2_omega(1) = 1e-6 + j*1e-6;;
+H_2_omega(N/2 +1) = 1e-6 + j*1e-6;;
+monotx=true; %monotransmission. true or false
 speaker='b'; %speaker to use for monotransmission. 'a' or 'b'
 SNR=20;
 %% qamstream generation
@@ -32,15 +36,15 @@ ofdmStream_a = ofdmStream(:,2);
 
 %% Real channel  
 t=0:1/fs:1000/fs;
-pulse=(1).*sin(2*pi*800*t); %short sine function is a good pulse
-[simin,nbsecs,~,toplay]=initparams_stereo(ofdmStream,fs,pulse,3); %Calls for function initparams.m
+pulse=(0.8).*sin(2*pi*800*t); %short sine function is a good pulse
+[simin,nbsecs,~,toplay]=initparams_stereo(ofdmStream,fs,pulse,speaker); %Calls for function initparams.m
 sim('recplay2');
 out=simout.signals.values;
 %% Signal Alignment 
 rxOfdmStream = alignIO7(out(:,1), pulse,fs);
 rxOfdmStream = rxOfdmStream(1:length(ofdmStream),1);
 %% OFDM Demodulation 
-Y = ofdm_demod_stereo(rxOfdmStream,N,true,prefix_value,remainder,H_1_omega,H_2_omega,monotx,speaker);
+Y = ofdm_demod_stereo(rxOfdmStream,N,true,prefix_value,remainder,H_1_omega,H_2_omega,monotx,speaker,Lt);
 %% QAM Demodulation
 rxBitStream = qam_demod(Y,Nq,'bin',true);
 %% Compute BER

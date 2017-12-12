@@ -24,8 +24,8 @@ packet = [zeros(1,size(A,2)); A ; zeros(1,size(A,2)) ; flipud(A_star)];
 %% Filtering data packet
 if ~monotx
     denum_H = sqrt(H_1.*((H_1').') + H_2.*((H_2').') );
-    denum_H(1) = 1e-6 + j*1e-6;
-    denum_H(501) = 1e-6 + j*1e-6;
+    denum_H(1) = 1e-6 + j;
+    denum_H(501) = 1e-6;
     filter_a = ((H_1').')./denum_H;
     filter_b = ((H_2').')./denum_H;
 elseif speaker == 'a'
@@ -43,8 +43,8 @@ for l =1:1:size(packet,2)
     packet_b(:,l) = (filter_b).*packet(:,l);
 end
 %% Generation of the total packet including training frames and data frames
-Total_packet_a = packet_a; %testing to remove trainpacket, should be [trainpacket,packet_a]
-Total_packet_b = packet_b;
+Total_packet_a = [trainpacket,packet_a]; %testing to remove trainpacket, should be [trainpacket,packet_a]
+Total_packet_b = [trainpacket,packet_b];
 lenDataPackage = size(packet);
 %% computation of the time sequence including training frames and data frames
 size_tot = size(Total_packet_a,2);
