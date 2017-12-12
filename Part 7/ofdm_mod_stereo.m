@@ -1,4 +1,4 @@
-function [x_serial,trainpacket,lenDataPackage] = ofdm_mod_stereo(mod_vec,N,pre,L,rem,trainblock,Lt,H_1,H_2,monotx,speaker)
+function [x_serial,trainpacket,lenDataPackage,div_Ld,Mod_Ld] = ofdm_mod_stereo(mod_vec,N,pre,L,rem,trainblock,Lt,H_1,H_2,monotx,speaker,Ld)
 %% If remainder isn't equal to 0, the last package will not be full.
 % This fills up the last packet with zeros if needed.
 if (rem ~=0)
@@ -25,7 +25,7 @@ packet = [zeros(1,size(A,2)); A ; zeros(1,size(A,2)) ; flipud(A_star)];
 if ~monotx
     denum_H = sqrt(H_1.*((H_1').') + H_2.*((H_2').') );
     denum_H(1) = 1e-6 + j*1e-6;
-    denum_H(501) = 1e-6 + j*1e-6;
+    denum_H(N/2 +1) = 1e-6 - j*1e-6;
     filter_a = ((H_1').')./denum_H;
     filter_b = ((H_2').')./denum_H;
 elseif speaker == 'a'
@@ -35,17 +35,39 @@ elseif speaker == 'b'
     filter_a = 0;
     filter_b = 1;
 end
-
 packet_a = zeros(size(packet));
 packet_b = zeros(size(packet));
-for l =1:1:size(packet,2)
-    packet_a(:,l) = (filter_a).*packet(:,l);
-    packet_b(:,l) = (filter_b).*packet(:,l);
+trainpacket_a = zeros(size(trainpacket));
+trainpacket_b = zeros(size(trainpacket));
+for k =1:1:size(packet,2)
+    packet_a(:,k) = (filter_a).*packet(:,k);
+    packet_b(:,k) = (filter_b).*packet(:,k);
+    
+end
+for k =1:1:size(trainpacket,2)
+    trainpacket_a(:,k) = (filter_a).*trainpacket(:,k);
+    trainpacket_b(:,k) = (filter_b).*trainpacket(:,k);
+    
 end
 %% Generation of the total packet including training frames and data frames
-Total_packet_a = packet_a; %testing to remove trainpacket, should be [trainpacket,packet_a]
-Total_packet_b = packet_b;
+%Total_packet_a = packet_a; %testing to remove trainpacket, should be [trainpacket,packet_a]
+%Total_packet_b = packet_b;
 lenDataPackage = size(packet);
+%% Generation of the total packet including training frames and data frames
+div_Ld = ceil(size(packet,2)./Ld);
+Mod_Ld = mod(size(packet,2),Ld);
+Total_packet_a = [];
+Total_packet_b = [];
+for b=1:1:div_Ld
+    if (b < div_Ld)
+        Total_packet_a = [Total_packet_a,trainpacket_a,packet_a(:,Ld*(b-1)+1:Ld*(b-1)+Ld)];
+        Total_packet_b = [Total_packet_b,trainpacket_b,packet_b(:,Ld*(b-1)+1:Ld*(b-1)+Ld)];
+    else
+        Total_packet_a = [Total_packet_a,trainpacket_a,packet_a(:,Ld*(b-1)+1:end)];
+        Total_packet_b = [Total_packet_b,trainpacket_b,packet_b(:,Ld*(b-1)+1:end)];
+
+    end
+end
 %% computation of the time sequence including training frames and data frames
 size_tot = size(Total_packet_a,2);
 x_a = ones(N,size_tot);

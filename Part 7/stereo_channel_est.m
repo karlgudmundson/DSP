@@ -2,11 +2,11 @@ clear all;
 close all;
 warning off;
 %% Definition of variables
-N=4000; %Frame length/ DFT size. N must be even
+N=2000; %Frame length/ DFT size. N must be even
 fs = 40e3; %sample freq
-Nq = 3; %QAM modulation size
+Nq = 2; %QAM modulation size
 prefix_value = 400+1;
-Lt = 100;% number of training
+Lt = 20;% number of training
 trainingFramesNum = Lt;%should be longer than the impulse response  frames
 numOfLoudSpeaker = 2;
 H_tot = ones(N,2);

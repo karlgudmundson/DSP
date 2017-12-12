@@ -3,20 +3,21 @@ clear all; close all;
 %% random transfer functions 
 stereo_channel_est;
 %% Definition of variables 
-N=4000; %Frame length/ DFT size. N must be even
+N=2000; %Frame length/ DFT size. N must be even
 fs = 40e3; %sample freq
-Nq = 3; %QAM modulation size
+Nq = 2; %QAM modulation size
 prefix_value = 400+1;
-Lt = 50;% number of training
+Lt = 1;% number of training
+Ld = 50;
 trainingFramesNum = Lt;%should be longer than the impulse response  frames 
 H_1_omega = H_tot(:,1);
 H_2_omega = H_tot(:,2);
 H_1_omega(1) = 1e-6 + j*1e-6;;
-H_1_omega(N/2 +1) = 1e-6 + j*1e-6;;
+H_1_omega(N/2 +1) = 1e-6 - j*1e-6;;
 H_2_omega(1) = 1e-6 + j*1e-6;;
-H_2_omega(N/2 +1) = 1e-6 + j*1e-6;;
+H_2_omega(N/2 +1) = 1e-6 - j*1e-6;;
 monotx=true; %monotransmission. true or false
-speaker='b'; %speaker to use for monotransmission. 'a' or 'b'
+speaker='a'; %speaker to use for monotransmission. 'a' or 'b'
 SNR=20;
 %% qamstream generation
 % Convert BMP image to bitstream
@@ -30,7 +31,7 @@ trainblock=randi([0 1], (N/2-1)*Nq, 1);
 trainblock=repmat(trainblock,trainingFramesNum,1);  %repeating the vector trainingFramesNum times
 trainblock=qam_mod_2(Nq,trainblock,'bin',true); %qam modulation
 %% OFDM stereo modulation 
-[ofdmStream,trainpacket,lenDataPackage] = ofdm_mod_stereo(qamStream,N,true,prefix_value,remainder,trainblock,Lt,H_1_omega,H_2_omega,monotx,speaker);
+[ofdmStream,trainpacket,lenDataPackage,div_Ld,Mod_Ld] = ofdm_mod_stereo(qamStream,N,true,prefix_value,remainder,trainblock,Lt,H_1_omega,H_2_omega,monotx,speaker,Ld);
 ofdmStream_b = ofdmStream(:,1);
 ofdmStream_a = ofdmStream(:,2);
 
@@ -44,7 +45,7 @@ out=simout.signals.values;
 rxOfdmStream = alignIO7(out(:,1), pulse,fs);
 rxOfdmStream = rxOfdmStream(1:length(ofdmStream),1);
 %% OFDM Demodulation 
-Y = ofdm_demod_stereo(rxOfdmStream,N,true,prefix_value,remainder,H_1_omega,H_2_omega,monotx,speaker,Lt);
+Y = ofdm_demod_stereo(rxOfdmStream,N,true,prefix_value,remainder,H_1_omega,H_2_omega,monotx,speaker,Lt,Ld,div_Ld,Mod_Ld,trainpacket);
 %% QAM Demodulation
 rxBitStream = qam_demod(Y,Nq,'bin',true);
 %% Compute BER
