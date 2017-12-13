@@ -5,9 +5,9 @@ warning off;
 %% Definition of variables 
 N=1000; %Frame length/ DFT size. N must be even
 fs = 30e3; %sample freq
-Nq = 2; %QAM modulation size
+Nq = 3; %QAM modulation size
 prefix_value = 100+1;
-Lt = 10;% number of training
+Lt = 50;% number of training
 trainingFramesNum = Lt;%should be longer than the impulse response  frames 
 %% qamstream generation
 % Convert BMP image to bitstream

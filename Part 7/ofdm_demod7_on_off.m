@@ -40,7 +40,7 @@ Wk = zeros(lenDataPackage);
 Wk(:,1) = (1./H_k').'; %complex conjugate, should be without dot ;)
 Wk(1,1) = 0 + j*0;
 Wk(N/2 +1,1) = 0 + j*0;
-mu = 0.3; %should be between 0 and 2 (for NLMS)
+mu = 0.7; %should be between 0 and 2 (for NLMS)
 %lower my is more stable but converges slower
 %my too high can give unstable Wk
 alpha = 0.05; %avoid to divid by 0--> choosing 0.1 is ok but the smartest way of doing this is measuring the mean value of U*U' and taking a value that make sense
@@ -58,7 +58,7 @@ end
 X_out = ((Wk').').*Yk;
 H_k_tot = (1./Wk').';
 H_k_tot(1,:) = 0 + j*0;
-H_k_tot(501,:) = 0 + j*0;
+H_k_tot(N/2+1,:) = 0 + j*0;
 
 %% in the simplest case, the only required operation is the extraction of X_k coefficients
 % Be careful there's some redundancy wihtin the X matrix (see slides lecture 3) 

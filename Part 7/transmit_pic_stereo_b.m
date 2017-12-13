@@ -3,12 +3,12 @@ clear all; close all;
 %% random transfer functions 
 stereo_channel_est;
 %% Definition of variables 
-N=2000; %Frame length/ DFT size. N must be even
-fs = 40e3; %sample freq
-Nq = 2; %QAM modulation size
+N=1000; %Frame length/ DFT size. N must be even
+fs = 20e3; %sample freq
+Nq = 4; %QAM modulation size
 prefix_value = 400+1;
-Lt = 1;% number of training
-Ld = 50;
+Lt = 5;% number of training
+Ld = 10;
 trainingFramesNum = Lt;%should be longer than the impulse response  frames 
 H_1_omega = H_tot(:,1);
 H_2_omega = H_tot(:,2);
@@ -16,8 +16,9 @@ H_1_omega(1) = 1e-6 + j*1e-6;;
 H_1_omega(N/2 +1) = 1e-6 - j*1e-6;;
 H_2_omega(1) = 1e-6 + j*1e-6;;
 H_2_omega(N/2 +1) = 1e-6 - j*1e-6;;
-monotx=true; %monotransmission. true or false
-speaker='a'; %speaker to use for monotransmission. 'a' or 'b'
+monotx=false; %monotransmission. true or false
+speaker='c'; %speaker to use for transmission. 'a' or 'b' for right and
+             %left speaker. c or any other character for both
 SNR=20;
 %% qamstream generation
 % Convert BMP image to bitstream

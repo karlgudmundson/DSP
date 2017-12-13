@@ -29,7 +29,7 @@ errorSig(1) = delta;
 
 %NLMS
 
-mu = .3; %should be between 0 and 2 (for NLMS)
+mu = .1; %should be between 0 and 2 (for NLMS)
 %lower my is more stable but converges slower
 %my too high can give unstable Wk
 alpha = 0.1; %avoid to divid by 0--> choosing 0.1 is ok but the smartest way of doing this is measuring the mean value of U*U' and taking a value that make sense
@@ -38,7 +38,8 @@ alpha = 0.1; %avoid to divid by 0--> choosing 0.1 is ok but the smartest way of 
 %qammod(sequence, M,mapping, 'InputType', 'bit', 'UnitAveragePower', UnitAveragePower, 'PlotConstellation', true);
 for L=1:size(Xk)-1
     X_k_tild = Wk(L)'*Yk(L+1);
-    X_k_hat = qammod(qamdemod(X_k_tild,2^Nq,'bin','OutputType', 'bit','UnitAveragePower', true),2^Nq,'bin','InputType', 'bit','UnitAveragePower', true);
+    %X_k_hat = qammod(qamdemod(X_k_tild,2^Nq,'bin','OutputType', 'bit','UnitAveragePower', true),2^Nq,'bin','InputType', 'bit','UnitAveragePower', true);
+    X_k_hat = Xk(L+1);
     Wk(L+1) = Wk(L) + mu*Yk(L+1)*conj(X_k_hat-Wk(L)'*Yk(L+1))/(alpha + Yk(L+1)'*Yk(L+1)); %% What about alpha ? 
     errorSig(L+1) = Wk(L+1) - 1/Hk(L+1)';
     
